@@ -1,13 +1,13 @@
 module mult_4x4(
 input reset,clk,
 input [3:0] A,B,
-output [7:0] O, // 8-bits output
-output Finish, output[7:0] count);
-reg [7:0] O;
-wire Finish;
+output reg [7:0] O, // 8-bits output
+output Finish, output reg [7:0] count);
+//reg [7:0] O;
+//wire Finish;
 reg [3:0] State; // state machine
 reg [8:0] ACC; // Accumulator
-reg [7:0] count;
+//reg [7:0] count;
 
 initial
 begin
@@ -16,7 +16,7 @@ end
 
 // logic to create 2 phase clocking when starting
 assign Finish = (State === 0)? 1 : 0; // Finish Flag
-always@(posedge clk, A,B)
+always@(posedge clk)
 	begin
 		count <= count + 1;
 		if(reset)
@@ -47,7 +47,7 @@ always@(posedge clk, A,B)
 					end
 				end
 				
-				else if(State == 2 || State == 2 || State == 6 || State == 8)
+				else if(State == 2 || State == 4 || State == 6 || State == 8)
 					// shift State
 					begin
 						ACC <= {1'b0,ACC[8:1]}; // shift right
@@ -99,8 +99,8 @@ begin
 	wait(Finish);
 
 	#2 reset = 1;
-	#2 reset = 0; Multiplicand = 4'b0011; Multiplier = 4'b0101;
+	#2 reset = 0; Multiplicand = 4'b0001; Multiplier = 4'b0111;
 	#2;
-	wait(Finish) #2 $display("The number of clock cycles is: %d \n", count); $finish;
+	wait(Finish) #2 $display("The number of clock cycles( including loading cycle) is: %d \n", count); $finish; //Minus one because the final answer is available at the start of the cycle itself
 end
 endmodule

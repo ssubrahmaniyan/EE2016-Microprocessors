@@ -2,7 +2,7 @@ module alu(output [3:0] out, input [3:0] a, b, input cin);
 assign out = a + b + cin;
 endmodule
 
-module booth_multiplier(output wire [7:0] product, input [3:0] Multiplier, Multiplicand, input clk, start, output finish, output [7:0] clock_count);
+module booth_multiplier(output wire [7:0] product, input [3:0] Multiplier, Multiplicand, input clk, start, output finish, output reg[7:0] clock_count);
 
 reg [3:0] A;
 reg [3:0] M;
@@ -10,7 +10,6 @@ reg [3:0] Q;
 reg Q1;
 integer count;
 wire [3:0] sum, diff;
-reg [7:0] clock_count;
 always@(posedge clk)
 begin
 	if(start)
@@ -19,7 +18,7 @@ begin
         	Q1 <= 1'b0;
         	M <= Multiplicand;
         	Q <= Multiplier;
-		clock_count <= 8'b0;
+		clock_count <= 8'b1;
 		count = 4;
 	end
 	else if(!finish)
@@ -72,9 +71,9 @@ begin
 	#2
 	start = 1;
 	#2 start = 0;
-	wait(finish) #2 $display("Finished in%d clock cycles\n", clock);
+	wait(finish) #2 $display("Finished in%d clock cycles\n", clock - 1);
 
-	mc = 4'b1000; mp = 4'b0001;
+	mc = 4'b0001; mp = 4'b0111;
 	#2
 	start = 1;
 	#2 start = 0;
