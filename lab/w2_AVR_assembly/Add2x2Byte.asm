@@ -1,0 +1,23 @@
+;
+; Add2x2Byte.asm
+;
+; Created: 18-08-2024 11:53:37
+; Author : Sanjeev S S B
+;
+
+.CSEG
+LDI ZL, LOW(VALS<<1)
+LDI ZH, HIGH(VALS<<1)
+LDI XL, 0X60
+LDI XH, 0X00
+LPM R16, Z+
+LPM R17, Z+
+LPM R18, Z+
+LPM R19, Z+
+ADD R16, R18
+ADC R17, R19
+ST X+, R16
+ST X, R17
+NOP
+
+VALS: .db 0x12, 0x34, 0x23, 0x54
